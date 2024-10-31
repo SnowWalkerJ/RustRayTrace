@@ -71,7 +71,7 @@ impl Shape for Sphere {
 
 #[cfg(test)]
 mod test {
-    use crate::Sphere;
+    
 
     #[test]
     fn test_hit() {
