@@ -45,18 +45,19 @@ impl Shape for Quard {
             Some(HitRecord {
                 point,
                 t,
-                hittable: self
+                hittable: self,
+                is_front: self.unitary_n.dot(ray.direction) < 0.0,
             })
         } else {
             None
         }
     }
 
-    fn get_normal(&self, in_ray: &Ray, _point: Point) -> Direction {
-        if in_ray.direction.dot(self.unitary_n) > 0.0 {
-            -self.unitary_n
-        } else {
+    fn get_normal(&self, _in_ray: &Ray, hit_record: &HitRecord) -> Direction {
+        if hit_record.is_front {
             self.unitary_n
+        } else {
+            -self.unitary_n
         }
     }
 

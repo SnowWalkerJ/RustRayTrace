@@ -21,7 +21,7 @@ impl<'a> ObjectHitRecord<'a> {
         self.object.texture.color(u, v)
     }
     pub fn scatter(&self, in_ray: &Ray) -> Option<Ray> {
-        let normal = self.object.shape.get_normal(in_ray, self.hit_record.point);
+        let normal = self.object.shape.get_normal(in_ray, &self.hit_record);
         self.object.material.scatter(&in_ray, &self.hit_record, normal)
     }
     pub fn emit(&self) -> Color {
@@ -46,3 +46,5 @@ impl Object {
     pub fn material(&self) -> &Box<dyn Material> { &self.material }
     pub fn texture(&self) -> &Box<dyn Texture> { &self.texture }
 }
+
+unsafe impl Send for Object {}

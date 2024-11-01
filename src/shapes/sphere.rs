@@ -18,12 +18,13 @@ impl Sphere {
     }
     // pub fn center(self) -> Point { self.center }
     // pub fn radius(self) -> f32 { self.radius }
-    fn _compute_hitrecord(&self, ray: &Ray, t: f32) -> HitRecord{
+    fn _compute_hitrecord(&self, ray: &Ray, t: f32, is_front: bool) -> HitRecord{
         let point = ray.at(t);
         HitRecord {
             point,
             t,
             hittable: self,
+            is_front,
         }
     }
 }
@@ -42,20 +43,20 @@ impl Shape for Sphere {
         let root1 = (-b - delta.sqrt()) / 2.0 / a;
         let root2 = (-b + delta.sqrt()) / 2.0 / a;
         if interval.within(root1) {
-            Some(self._compute_hitrecord(ray, root1))
+            Some(self._compute_hitrecord(ray, root1, true))
         } else if interval.within(root2) {
-            Some(self._compute_hitrecord(ray, root2))
+            Some(self._compute_hitrecord(ray, root2, false))
         } else {
             None
         }
 
     }
-    fn get_normal(&self, in_ray: &Ray, point: Point) -> Direction {
-        let normal = (point - self.center).unitary();
-        if normal.dot(in_ray.direction) < 0.0 {
-            normal
-        } else {
+    fn get_normal(&self, _in_ray: &Ray, hit_record: &HitRecord) -> Direction {
+        let normal = (hit_record.point - self.center).unitary();
+        if hit_record.is_front {
             -normal
+        } else {
+            normal
         }
     }
     fn get_uv(&self, point: Point) -> (f32, f32) {
